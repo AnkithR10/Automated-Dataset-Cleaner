@@ -1,0 +1,6 @@
+id,name,age,salary,churn
+1,Alice,25,50000,0
+2,Bob,30,60000,1
+3,Charlie,,70000,0
+4,David,40,80000,1
+5,Alice,25,50000,0
