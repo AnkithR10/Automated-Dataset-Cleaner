@@ -5,7 +5,7 @@ import {
   onAuthStateChanged,
   signOut
 } from "firebase/auth";
-import { auth, signInWithGoogle as firebaseSignInWithGoogle } from "@/lib/firebase";
+import { auth, signInWithGoogle as firebaseSignInWithGoogle, getRedirectResult } from "@/lib/firebase";
 
 interface AuthContextType {
   user: any | null;
@@ -51,6 +51,19 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(false);
     });
 
+    // Handle Redirect Result for Vercel/mobile browsers
+    getRedirectResult(auth)
+      .then(async (result) => {
+        if (result?.user) {
+          setUser(result.user);
+          const token = await result.user.getIdToken(true);
+          setIdToken(token);
+        }
+      })
+      .catch((error) => {
+        console.error("Redirect Result Error:", error);
+      });
+
     return () => unsubscribe();
   }, []);
 
@@ -75,14 +88,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setLoading(true);
     try {
       const result = await firebaseSignInWithGoogle();
-      const token = await result.user.getIdToken();
-      setIdToken(token);
+      if (result?.user) {
+        setUser(result.user);
+        const token = await result.user.getIdToken(true);
+        setIdToken(token);
+      }
+      setLoading(false);
       return result;
     } catch (error) {
       console.error("Google Auth popup error:", error);
-      throw error;
-    } finally {
       setLoading(false);
+      throw error;
     }
   };
 

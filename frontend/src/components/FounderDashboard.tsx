@@ -49,7 +49,7 @@ interface FounderDashboardProps {
   onClose: () => void;
 }
 
-const BACKEND = process.env.NEXT_PUBLIC_API_URL as string;
+const BACKEND = process.env.NEXT_PUBLIC_API_URL || "";
 
 export function FounderDashboard({ onClose }: FounderDashboardProps) {
   const { user, idToken } = useAuth();

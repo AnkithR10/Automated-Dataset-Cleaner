@@ -65,7 +65,7 @@ const COMPARISON_FEATURES: CompareFeature[] = [
   { name: "Priority Processing", free: false, plus: false, pro: true },
 ];
 
-const BACKEND = process.env.NEXT_PUBLIC_API_URL as string;
+const BACKEND = process.env.NEXT_PUBLIC_API_URL || "";
 
 export default function PricingPage() {
   const { isAuthenticated, loading, isPremium } = useAuth();

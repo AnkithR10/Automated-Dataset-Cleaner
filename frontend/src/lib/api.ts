@@ -1,7 +1,7 @@
 import axios from "axios";
 import { auth } from "./firebase";
 
-const BACKEND = process.env.NEXT_PUBLIC_API_URL as string;
+const BACKEND = process.env.NEXT_PUBLIC_API_URL || "";
 
 const api = axios.create({
   baseURL: BACKEND,

@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth, Auth, GoogleAuthProvider, signInWithPopup } from "firebase/auth";
+import { getAuth, Auth, GoogleAuthProvider, signInWithPopup, getRedirectResult } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 // Firebase configuration keys read from environment
@@ -55,5 +55,5 @@ provider.setCustomParameters({
 
 const signInWithGoogle = () => signInWithPopup(auth, provider);
 
-export { app, auth, db, isConfigComplete, signInWithGoogle };
+export { app, auth, db, isConfigComplete, signInWithGoogle, getRedirectResult };
 

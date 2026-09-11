@@ -50,12 +50,12 @@
   --font-size-base: 15px;
 
   /* Color palette — Teal/Emerald primary replacing blue */
-  --primary:       #10b981;
-  --primary-hover: #059669;
-  --primary-glow:  rgba(16, 185, 129, 0.15);
+  --primary:       #059669;
+  --primary-hover: #047857;
+  --primary-glow:  rgba(5, 150, 105, 0.15);
 
   --secondary:       #64748b;
-  --accent-emerald:  #10b981;
+  --accent-emerald:  #059669;
   --accent-amber:    #f59e0b;
   --accent-rose:     #f43f5e;
   --accent-cyan:     #06b6d4;

@@ -90,7 +90,7 @@ export default function UploadPage() {
     }, 100);
 
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL as string;
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || "";
       const formData = new FormData();
       formData.append("file", file);
 
@@ -125,7 +125,7 @@ export default function UploadPage() {
     setErrorMessage(null);
 
     try {
-      const backendUrl = process.env.NEXT_PUBLIC_API_URL as string;
+      const backendUrl = process.env.NEXT_PUBLIC_API_URL || "";
       const emailParam = user?.email ? `?user_email=${encodeURIComponent(user.email)}` : "";
       
       const response = await fetch(`${backendUrl}/api/process/${jobId}${emailParam}`, {
@@ -160,7 +160,7 @@ export default function UploadPage() {
 
     const checkStatus = async () => {
       try {
-        const backendUrl = process.env.NEXT_PUBLIC_API_URL as string;
+        const backendUrl = process.env.NEXT_PUBLIC_API_URL || "";
         const response = await fetch(`${backendUrl}/api/status/${jobId}`);
         
         if (!response.ok) {
@@ -192,7 +192,7 @@ export default function UploadPage() {
 
   const handleDownload = () => {
     if (!jobId) return;
-    const backendUrl = process.env.NEXT_PUBLIC_API_URL as string;
+    const backendUrl = process.env.NEXT_PUBLIC_API_URL || "";
     window.open(`${backendUrl}/api/download/${jobId}`, "_blank");
   };
 

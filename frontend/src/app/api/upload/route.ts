@@ -5,9 +5,7 @@ import path from 'path';
 import fs from 'fs';
 import Papa from 'papaparse';
 
-// In-memory store for jobs. Note: In a true multi-instance serverless 
-// environment, you should use Vercel Blob, Redis, or Firestore.
-export const jobsDb: Record<string, any> = {};
+import { jobsDb } from '@/lib/store';
 
 export async function POST(req: Request) {
   try {

@@ -16,7 +16,8 @@ export function AuthGuard({ children }: AuthGuardProps) {
 
   useEffect(() => {
     if (!loading) {
-      const isPublicPath = pathname === "/" || pathname === "/login";
+      const publicPaths = ["/", "/login", "/pricing"];
+      const isPublicPath = publicPaths.includes(pathname);
       if (!user && !isPublicPath) {
         router.push("/login");
       }
@@ -33,7 +34,8 @@ export function AuthGuard({ children }: AuthGuardProps) {
   }
 
   // If user is null and trying to access a protected path, show blank/loading while redirecting
-  const isPublicPath = pathname === "/" || pathname === "/login";
+  const publicPaths = ["/", "/login", "/pricing"];
+  const isPublicPath = publicPaths.includes(pathname);
   if (!user && !isPublicPath) {
     return null;
   }
