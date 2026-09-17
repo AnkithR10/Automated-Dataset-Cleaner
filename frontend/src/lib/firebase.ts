@@ -1,5 +1,5 @@
 import { initializeApp, getApps, getApp } from "firebase/app";
-import { getAuth, Auth, GoogleAuthProvider, signInWithPopup, getRedirectResult } from "firebase/auth";
+import { getAuth, Auth, GoogleAuthProvider, signInWithRedirect, getRedirectResult } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
 
 // Firebase configuration keys read from environment
@@ -56,7 +56,7 @@ provider.setCustomParameters({
   prompt: 'select_account' // This forces the "Choose an account" screen
 });
 
-const signInWithGoogle = () => signInWithPopup(auth, provider);
+const signInWithGoogle = () => signInWithRedirect(auth, provider);
 
 export { app, auth, db, isConfigComplete, signInWithGoogle, getRedirectResult };
 

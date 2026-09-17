@@ -87,16 +87,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signInWithGoogle = async () => {
     setLoading(true);
     try {
-      const result = await firebaseSignInWithGoogle();
-      if (result?.user) {
-        setUser(result.user);
-        const token = await result.user.getIdToken(true);
-        setIdToken(token);
-      }
-      setLoading(false);
-      return result;
-    } catch (error) {
-      console.error("Google Auth popup error:", error);
+      await firebaseSignInWithGoogle();
+      // The browser will redirect, keep loading true to prevent flickers
+    } catch (error: any) {
+      console.error("Login failed:", error?.code, error?.message);
       setLoading(false);
       throw error;
     }

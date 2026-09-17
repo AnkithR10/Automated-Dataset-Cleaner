@@ -53,7 +53,7 @@ export function LoginCard({ onGoogleLogin, isLoading, onClose }: LoginCardProps)
         {isLoading ? (
           <>
             <Loader2 className="animate-spin" size={14} />
-            Authenticating...
+            Connecting to Google...
           </>
         ) : (
           <>
