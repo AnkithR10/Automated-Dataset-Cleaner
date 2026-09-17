@@ -22,10 +22,13 @@ const isConfigComplete =
   firebaseConfig.projectId;
 
 if (!isConfigComplete) {
+  if (process.env.NODE_ENV === "production") {
+    throw new Error("Firebase Client configuration is missing or incomplete in production! Check your Vercel environment variables.");
+  }
   if (typeof window !== "undefined") {
     console.warn(
       "Firebase Client configuration is missing or incomplete. " +
-      "Check your .env or .env.local file."
+      "Check your .env or .env.local file. Falling back to mock app for development."
     );
   }
   // Initialize standard dummy values so build doesn't fail

@@ -18,8 +18,11 @@ export function AuthGuard({ children }: AuthGuardProps) {
     if (!loading) {
       const publicPaths = ["/", "/login", "/pricing"];
       const isPublicPath = publicPaths.includes(pathname);
+      
       if (!user && !isPublicPath) {
-        router.push("/login");
+        router.replace("/"); // Redirect to landing instead of /login to prevent loops if /login doesn't exist
+      } else if (user && (pathname === "/" || pathname === "/login")) {
+        router.replace("/dashboard");
       }
     }
   }, [user, loading, pathname, router]);

@@ -51,7 +51,10 @@ export function LoginCard({ onGoogleLogin, isLoading, onClose }: LoginCardProps)
         className="w-full px-4 py-3 text-sm font-bold rounded-xl bg-white dark:bg-slate-900 border-2 border-slate-800 dark:border-slate-200 hover:bg-slate-50 dark:hover:bg-slate-800 text-slate-800 dark:text-white transition-all flex items-center justify-center gap-2.5 shadow-md hover:shadow-lg cursor-pointer"
       >
         {isLoading ? (
-          <Loader2 className="animate-spin" size={14} />
+          <>
+            <Loader2 className="animate-spin" size={14} />
+            Authenticating...
+          </>
         ) : (
           <>
             <svg className="w-3.5 h-3.5 flex-shrink-0" viewBox="0 0 24 24">
