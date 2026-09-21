@@ -1,8 +1,8 @@
 "use client";
 
 import React from "react";
+import { DropzoneRootProps, DropzoneInputProps } from "react-dropzone";
 import { Upload, Loader2, History, FileSpreadsheet, Trash2, ArrowRight } from "lucide-react";
-import { DropzoneState } from "react-dropzone";
 
 interface HistoryItem {
   jobId: string;
@@ -16,7 +16,12 @@ interface HistoryItem {
 }
 
 interface DatasetWorkspaceProps {
-  dropzone: DropzoneState;
+  dropzone: {
+    getRootProps: <T extends DropzoneRootProps>(props?: T) => T;
+    getInputProps: <T extends DropzoneInputProps>(props?: T) => T;
+    isDragActive: boolean;
+    open?: () => void;
+  };
   uploading: boolean;
   uploadProgress: number;
   filteredHistory: HistoryItem[];
@@ -64,7 +69,13 @@ export function DatasetWorkspace({
             Upload a raw CSV or Excel file up to 25MB to begin the automated cleaning and enrichment process.
           </p>
           {!uploading && (
-            <button className="px-6 py-2.5 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-md transition-colors cursor-pointer">
+            <button 
+              onClick={(e) => {
+                e.stopPropagation();
+                if (dropzone.open) dropzone.open();
+              }}
+              className="px-6 py-2.5 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-md transition-colors cursor-pointer"
+            >
               Browse Files
             </button>
           )}

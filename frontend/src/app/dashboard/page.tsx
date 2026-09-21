@@ -181,7 +181,7 @@ export default function DashboardPage() {
     handleUploadFile(selectedFile);
   }, []);
 
-  const { getRootProps, getInputProps, isDragActive } = useDropzone({
+  const { getRootProps, getInputProps, isDragActive, open } = useDropzone({
     onDrop,
     accept: {
       "text/csv": [".csv"]
@@ -453,7 +453,7 @@ export default function DashboardPage() {
     if (!jobId) {
       return (
         <DatasetWorkspace
-          dropzone={{ getRootProps, getInputProps, isDragActive }}
+          dropzone={{ getRootProps, getInputProps, isDragActive, open }}
           uploading={uploading}
           uploadProgress={uploadProgress}
           filteredHistory={filteredHistory}
