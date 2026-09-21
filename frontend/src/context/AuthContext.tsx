@@ -87,10 +87,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const signInWithGoogle = async () => {
     setLoading(true);
     try {
-      await firebaseSignInWithGoogle();
-      // The browser will redirect, keep loading true to prevent flickers
+      const result = await firebaseSignInWithGoogle();
+      if (result?.user) {
+        setUser(result.user);
+        const token = await result.user.getIdToken(true);
+        setIdToken(token);
+      }
+      setLoading(false);
+      return result;
     } catch (error: any) {
-      console.error("Login failed:", error?.code, error?.message);
+      console.error("Auth error:", error?.code, error?.message);
       setLoading(false);
       throw error;
     }

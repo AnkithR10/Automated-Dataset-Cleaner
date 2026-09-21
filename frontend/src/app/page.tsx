@@ -39,18 +39,23 @@ function LandingPage() {
     setAuthLoading(true);
     try {
       await signInWithGoogle();
-      // Browser will redirect, so the lines below may not execute.
+      setShowAuthModal(false);
+      addToast("Successfully logged in with Google", "success");
+      router.push("/dashboard");
     } catch (err: any) {
-      console.error("Login failed:", err?.code, err?.message);
+      console.error("Auth error:", err?.code, err?.message);
       
       let errorMessage = "Authentication failed. Please try again.";
-      if (err?.code === "auth/unauthorized-domain") {
+      if (err?.code === "auth/popup-closed-by-user") {
+        errorMessage = "Sign-in cancelled.";
+      } else if (err?.code === "auth/unauthorized-domain") {
         errorMessage = "This domain is not authorized for Google Sign-In.";
       } else if (err?.code === "auth/network-request-failed") {
         errorMessage = "Network error. Please check your connection.";
       }
       
       addToast(errorMessage, "error");
+    } finally {
       setAuthLoading(false);
     }
   };
