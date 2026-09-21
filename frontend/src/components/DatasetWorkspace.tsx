@@ -48,10 +48,10 @@ export function DatasetWorkspace({
         {/* Dropzone */}
         <div
           {...getRootProps()}
-          className={`flex flex-col items-center justify-center w-full border-2 border-dashed rounded-3xl p-10 text-center cursor-pointer transition-all duration-300 shadow-sm ${
+          className={`flex flex-col items-center justify-center w-full border-2 border-dashed rounded-3xl p-10 text-center cursor-pointer transition-all duration-300 shadow-sm dark:shadow-2xl ${
             isDragActive
               ? "border-emerald-500 bg-emerald-50/30 scale-[1.02]"
-              : "border-slate-300 hover:border-emerald-500 hover:bg-emerald-50/20 bg-white dark:bg-slate-900 dark:border-slate-800"
+              : "border-slate-300 hover:border-emerald-500 hover:bg-emerald-50/20 bg-white dark:backdrop-blur-md dark:bg-slate-900/90 dark:border-slate-800/80"
           }`}
         >
           <input {...getInputProps()} />
@@ -82,7 +82,7 @@ export function DatasetWorkspace({
         </div>
 
         {/* Data Pipeline Map */}
-        <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-3xl p-8 flex flex-col justify-center shadow-sm">
+        <div className="bg-white dark:backdrop-blur-md dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 rounded-3xl p-6 md:p-8 flex flex-col justify-center h-full relative overflow-hidden shadow-sm dark:shadow-2xl">
           <h4 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-6 flex items-center gap-2">
             Automated Pipeline
           </h4>

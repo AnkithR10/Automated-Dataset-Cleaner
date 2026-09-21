@@ -466,7 +466,7 @@ export default function DashboardPage() {
     return (
       <div className="flex flex-col gap-6">
         {/* Top active bar */}
-        <div className="p-4 bg-slate-50 border border-slate-200 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+        <div className="p-4 bg-slate-50 dark:backdrop-blur-md dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-sm dark:shadow-2xl">
           <div className="flex items-center gap-3">
             <div className="h-10 w-10 bg-emerald-50 border border-emerald-100 rounded-xl flex items-center justify-center text-emerald-600">
               <FileSpreadsheet size={20} />
@@ -510,7 +510,7 @@ export default function DashboardPage() {
           <div className="lg:col-span-5 space-y-6">
             
             {/* Configuration Panel */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-5">
+            <div className="bg-white dark:backdrop-blur-md dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 rounded-xl p-5 shadow-sm dark:shadow-2xl space-y-5">
               <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider pb-3 border-b border-slate-100 flex items-center gap-2">
                 <Settings2 size={16} className="text-emerald-600" /> Cleaning Configuration
               </h3>
@@ -586,7 +586,7 @@ export default function DashboardPage() {
             </div>
 
             {/* Tabular Preview Panel */}
-            <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-4">
+            <div className="bg-white dark:backdrop-blur-md dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 rounded-xl p-5 shadow-sm dark:shadow-2xl space-y-4">
               <div className="flex justify-between items-center pb-2 border-b border-slate-100">
                 <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider flex items-center gap-2">
                   <Table size={16} className="text-slate-500" /> Parsed Dataset Preview

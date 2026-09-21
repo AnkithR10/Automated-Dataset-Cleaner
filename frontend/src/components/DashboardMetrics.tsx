@@ -16,7 +16,7 @@ export function DashboardMetrics({ datasetsCleaned, quotaLimit, isPremium, pipel
   return (
     <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
       {/* Metric 1: Total Datasets Cleaned & Quota */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm flex flex-col justify-between">
+      <div className="bg-white dark:backdrop-blur-md dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 shadow-sm dark:shadow-2xl flex flex-col justify-between">
         <div className="flex justify-between items-start mb-4">
           <div>
             <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
@@ -46,7 +46,7 @@ export function DashboardMetrics({ datasetsCleaned, quotaLimit, isPremium, pipel
       </div>
 
       {/* Metric 2: Data Health Index */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm flex flex-col justify-between">
+      <div className="bg-white dark:backdrop-blur-md dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 shadow-sm dark:shadow-2xl flex flex-col justify-between">
         <div className="flex justify-between items-start mb-4">
           <div>
             <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">
@@ -69,7 +69,7 @@ export function DashboardMetrics({ datasetsCleaned, quotaLimit, isPremium, pipel
       </div>
 
       {/* Metric 3: Active Processing Pipeline */}
-      <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-5 shadow-sm flex flex-col justify-between">
+      <div className="bg-white dark:backdrop-blur-md dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 shadow-sm dark:shadow-2xl flex flex-col justify-between">
         <div className="flex justify-between items-start mb-4">
           <div>
             <p className="text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-1">

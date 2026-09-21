@@ -122,7 +122,7 @@ export function Sidebar() {
 
       {/* DESKTOP SIDEBAR */}
       <aside 
-        className={`${isCollapsed ? 'w-20' : 'w-72'} border-r border-slate-200 dark:border-slate-800 bg-slate-50 dark:bg-slate-900 hidden md:flex flex-col h-screen sticky top-0 left-0 flex-shrink-0 z-20 transition-all duration-300`}
+        className={`${isCollapsed ? 'w-20' : 'w-72'} border-r border-slate-200 dark:border-slate-800/80 bg-slate-50 dark:bg-slate-950 hidden md:flex flex-col h-screen sticky top-0 left-0 flex-shrink-0 z-20 transition-all duration-300`}
       >
         <div className="flex items-center p-4">
           <button 
@@ -137,9 +137,9 @@ export function Sidebar() {
         <div className="px-4 mb-6">
           <Link 
             href="/dashboard"
-            className={`flex items-center gap-3 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 rounded-2xl transition-all shadow-sm ${isCollapsed ? 'p-3 justify-center' : 'px-4 py-3'}`}
+            className={`flex items-center gap-3 bg-white dark:bg-emerald-900/20 hover:bg-slate-100 dark:hover:bg-emerald-900/40 border border-slate-200 dark:border-emerald-500/30 text-slate-800 dark:text-emerald-400 rounded-2xl transition-all shadow-sm dark:shadow-emerald-900/20 ${isCollapsed ? 'p-3 justify-center' : 'px-4 py-3'}`}
           >
-            <Plus size={20} className="text-blue-600 dark:text-blue-400 flex-shrink-0" />
+            <Plus size={20} className="text-emerald-600 dark:text-emerald-400 flex-shrink-0" />
             {!isCollapsed && <span className="font-semibold text-sm">New Dataset</span>}
           </Link>
         </div>
@@ -180,20 +180,20 @@ export function Sidebar() {
         </div>
 
         {/* Bottom: Profile & Settings */}
-        <div className="p-4 mt-auto border-t border-slate-200 dark:border-slate-800">
+        <div className="p-4 mt-auto border-t border-slate-200 dark:border-slate-800/80">
           {!loading && isAuthenticated && (
             <div className="flex flex-col gap-2">
               <div 
                 onClick={() => setShowSettings(true)}
-                className={`flex items-center gap-3 p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors cursor-pointer group ${isCollapsed ? 'justify-center' : ''}`}
+                className={`flex items-center gap-3 p-2 rounded-xl hover:bg-slate-200 dark:hover:bg-slate-900 transition-colors cursor-pointer group border border-transparent dark:hover:border-slate-800/80 ${isCollapsed ? 'justify-center' : ''}`}
               >
-                <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 font-bold text-xs flex-shrink-0 group-hover:bg-blue-200 dark:group-hover:bg-blue-800 transition-colors">
+                <div className="h-8 w-8 rounded-full bg-emerald-100 dark:bg-emerald-900/40 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-bold text-xs flex-shrink-0 group-hover:bg-emerald-200 dark:group-hover:bg-emerald-900/60 transition-colors border dark:border-emerald-500/20">
                   {user?.displayName ? user.displayName[0].toUpperCase() : user?.email ? user.email[0].toUpperCase() : "U"}
                 </div>
                 {!isCollapsed && (
                   <div className="min-w-0 flex-1 flex justify-between items-center">
                     <div className="flex flex-col">
-                      <span className="text-sm font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">
+                      <span className="text-sm font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-emerald-700 dark:group-hover:text-emerald-400 transition-colors">
                         {user?.displayName || user?.email?.split("@")[0].toUpperCase() || "User"}
                       </span>
                       <span className="text-xs text-slate-500 truncate">
@@ -216,11 +216,11 @@ export function Sidebar() {
       </aside>
 
       {/* MOBILE TOP NAVBAR */}
-      <header className="md:hidden sticky top-0 left-0 right-0 z-30 h-16 flex items-center justify-between border-b border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900 px-4 transition-colors duration-300">
+      <header className="md:hidden sticky top-0 left-0 right-0 z-30 h-16 flex items-center justify-between border-b border-slate-200 dark:border-slate-800/80 bg-white dark:bg-slate-950 px-4 transition-colors duration-300">
         <Link href="/dashboard" className="flex items-center gap-2">
-          <div className="h-3 w-3 rounded-full bg-blue-600" />
+          <div className="h-3 w-3 rounded-full bg-emerald-500" />
           <span className="font-bold text-slate-900 dark:text-white text-base tracking-tight">
-            Dataset<span className="text-blue-600">Cleaner</span>
+            Dataset<span className="text-emerald-500">Cleaner</span>
           </span>
         </Link>
         <button
@@ -235,15 +235,15 @@ export function Sidebar() {
       {mobileMenuOpen && (
         <div className="fixed inset-0 bg-slate-950/50 backdrop-blur-sm z-20 md:hidden animate-fade-in" onClick={() => setMobileMenuOpen(false)}>
           <div 
-            className="absolute top-16 left-0 right-0 bottom-0 bg-white dark:bg-slate-900 border-t border-slate-200 dark:border-slate-800 p-5 shadow-2xl flex flex-col gap-5 animate-slide-down overflow-y-auto"
+            className="absolute top-16 left-0 right-0 bottom-0 bg-white dark:bg-slate-950 border-t border-slate-200 dark:border-slate-800/80 p-5 shadow-2xl flex flex-col gap-5 animate-slide-down overflow-y-auto"
             onClick={(e) => e.stopPropagation()}
           >
             <Link 
               href="/dashboard"
               onClick={() => setMobileMenuOpen(false)}
-              className="flex items-center justify-center gap-3 bg-white dark:bg-slate-800 hover:bg-slate-100 dark:hover:bg-slate-700 border border-slate-200 dark:border-slate-700 text-slate-800 dark:text-slate-200 px-4 py-3 rounded-2xl transition-all shadow-sm"
+              className="flex items-center justify-center gap-3 bg-white dark:bg-emerald-900/20 hover:bg-slate-100 dark:hover:bg-emerald-900/40 border border-slate-200 dark:border-emerald-500/30 text-slate-800 dark:text-emerald-400 px-4 py-3 rounded-2xl transition-all shadow-sm"
             >
-              <Plus size={20} className="text-blue-600" />
+              <Plus size={20} className="text-emerald-500" />
               <span className="font-semibold text-sm">New Dataset</span>
             </Link>
 
@@ -282,9 +282,9 @@ export function Sidebar() {
 
             {isAuthenticated && (
               <div className="border-t border-slate-200 dark:border-slate-800 pt-4 flex flex-col gap-3 mt-auto">
-                <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" onClick={() => { setShowSettings(true); setMobileMenuOpen(false); }}>
+                <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-900 rounded-xl border border-transparent dark:border-slate-800/80 cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors" onClick={() => { setShowSettings(true); setMobileMenuOpen(false); }}>
                   <div className="flex items-center gap-2">
-                    <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 font-bold text-xs">
+                    <div className="h-8 w-8 rounded-full bg-emerald-100 dark:bg-emerald-900/40 border dark:border-emerald-500/20 flex items-center justify-center text-emerald-600 dark:text-emerald-400 font-bold text-xs">
                       {user?.displayName ? user.displayName[0].toUpperCase() : user?.email ? user.email[0].toUpperCase() : "U"}
                     </div>
                     <div className="flex flex-col">

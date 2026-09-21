@@ -31,7 +31,7 @@ export function ActivityLog({ historyList, activeJobId, onSelect, onClear }: Act
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm flex flex-col md:flex-row gap-8 relative overflow-hidden transition-all duration-300 h-full">
+    <div className="bg-white dark:backdrop-blur-md dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 shadow-sm dark:shadow-2xl flex flex-col md:flex-row gap-8 relative overflow-hidden transition-all duration-300 h-full">
       {/* Decorative background shape */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
 
