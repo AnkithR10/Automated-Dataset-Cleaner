@@ -472,10 +472,18 @@ export default function DashboardPage() {
               <FileSpreadsheet size={20} />
             </div>
             <div>
-              <h2 className="font-bold text-slate-900 text-sm">{activeFilename}</h2>
-              <span className="text-[10px] text-slate-400 block font-semibold mt-0.5">
-                Columns: {datasetMetadata?.cols || 0} · Rows: {datasetMetadata?.rows || 10} · Default Target: <strong>{datasetMetadata?.target || "target"}</strong>
-              </span>
+              <h2 className="font-bold text-slate-900 dark:text-slate-100 text-sm">{activeFilename}</h2>
+              <div className="flex flex-wrap items-center gap-2 mt-1.5">
+                <span className="px-2 py-0.5 bg-slate-200/60 dark:bg-slate-800 text-[10px] text-slate-600 dark:text-slate-400 font-bold rounded-md whitespace-nowrap">
+                  {datasetMetadata?.cols || 0} Columns
+                </span>
+                <span className="px-2 py-0.5 bg-slate-200/60 dark:bg-slate-800 text-[10px] text-slate-600 dark:text-slate-400 font-bold rounded-md whitespace-nowrap">
+                  {datasetMetadata?.rows || 0} Rows
+                </span>
+                <span className="px-2 py-0.5 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 text-[10px] font-bold rounded-md whitespace-nowrap border border-blue-100 dark:border-blue-800">
+                  Target: {datasetMetadata?.target || "None"}
+                </span>
+              </div>
             </div>
           </div>
 
@@ -695,20 +703,17 @@ export default function DashboardPage() {
 
         {renderWorkspace()}
 
-        {/* WORKFLOW & ACTIVITY */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <WorkflowVisualizer />
-          <div className="dashboard-grid bg-slate-50/50 dark:bg-slate-950/20 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm overflow-hidden flex flex-col">
-            <ActivityLog
-              historyList={historyList}
-              activeJobId={jobId}
-              onSelect={handleSelectHistoryDataset}
-              onClear={() => {
-                setHistoryList([]);
-                handleResetWorkspace();
-              }}
-            />
-          </div>
+        {/* BOTTOM WIDE ACTIVITY LOG */}
+        <div className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-6 overflow-hidden">
+          <ActivityLog
+            historyList={historyList}
+            activeJobId={jobId}
+            onSelect={handleSelectHistoryDataset}
+            onClear={() => {
+              setHistoryList([]);
+              handleResetWorkspace();
+            }}
+          />
         </div>
 
         <RecentActivityTable

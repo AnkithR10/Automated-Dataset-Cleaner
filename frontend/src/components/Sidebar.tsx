@@ -15,7 +15,8 @@ import {
   Plus,
   MessageSquare,
   Settings,
-  MoreVertical
+  MoreVertical,
+  Trash2
 } from "lucide-react";
 
 export function Sidebar() {
@@ -28,6 +29,7 @@ export function Sidebar() {
   const [showSettings, setShowSettings] = useState(false);
   const [quota, setQuota] = useState<any>(null);
   const [userData, setUserData] = useState<any>(null);
+  const [historyList, setHistoryList] = useState<any[]>([]);
 
   const hasPremium = userData?.isPremium ?? isPremium;
 
@@ -75,12 +77,39 @@ export function Sidebar() {
     return null;
   }
 
-  // Dummy data for "Recent Datasets"
-  const recentDatasets = [
-    "Sales_Data_Q1.csv",
-    "Customer_Churn.csv",
-    "Marketing_Metrics.csv"
-  ];
+  // Read local history on mount and listen to changes if possible
+  useEffect(() => {
+    const loadHistory = () => {
+      const saved = localStorage.getItem("cleaner_history");
+      if (saved) {
+        try {
+          setHistoryList(JSON.parse(saved));
+        } catch (e) {
+          console.error("Failed to load history in sidebar", e);
+        }
+      } else {
+        setHistoryList([]);
+      }
+    };
+    loadHistory();
+    window.addEventListener("storage", loadHistory);
+    return () => window.removeEventListener("storage", loadHistory);
+  }, [pathname]); // Reload when pathname changes (e.g. going to dashboard)
+
+  const handleRemoveHistory = (e: React.MouseEvent, jobId: string) => {
+    e.preventDefault();
+    e.stopPropagation();
+    const saved = localStorage.getItem("cleaner_history");
+    if (saved) {
+      try {
+        const parsed = JSON.parse(saved);
+        const updated = parsed.filter((item: any) => item.jobId !== jobId);
+        localStorage.setItem("cleaner_history", JSON.stringify(updated));
+        setHistoryList(updated);
+        window.dispatchEvent(new Event("storage"));
+      } catch (err) {}
+    }
+  };
 
   return (
     <>
@@ -123,17 +152,30 @@ export function Sidebar() {
             </div>
           )}
           <nav className="space-y-1">
-            {recentDatasets.map((dataset, idx) => (
-              <Link
-                key={idx}
-                href="/dashboard"
-                className={`flex items-center gap-3 p-2.5 rounded-lg text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors ${isCollapsed ? 'justify-center' : ''}`}
-                title={dataset}
+            {historyList.map((item) => (
+              <div
+                key={item.jobId}
+                className={`flex items-center justify-between p-2.5 rounded-lg text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors group ${isCollapsed ? 'justify-center' : ''}`}
+                title={item.filename}
               >
-                <MessageSquare size={18} className="text-slate-400 flex-shrink-0" />
-                {!isCollapsed && <span className="truncate">{dataset}</span>}
-              </Link>
+                <Link href="/dashboard" className="flex items-center gap-3 min-w-0 flex-1">
+                  <MessageSquare size={18} className="text-slate-400 flex-shrink-0" />
+                  {!isCollapsed && <span className="truncate">{item.filename}</span>}
+                </Link>
+                {!isCollapsed && (
+                  <button
+                    onClick={(e) => handleRemoveHistory(e, item.jobId)}
+                    className="p-1 text-slate-400 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                    title="Remove"
+                  >
+                    <Trash2 size={14} />
+                  </button>
+                )}
+              </div>
             ))}
+            {historyList.length === 0 && !isCollapsed && (
+              <div className="text-xs text-slate-400 px-2 py-4 italic">No recent datasets</div>
+            )}
           </nav>
         </div>
 
@@ -141,23 +183,17 @@ export function Sidebar() {
         <div className="p-4 mt-auto border-t border-slate-200 dark:border-slate-800">
           {!loading && isAuthenticated && (
             <div className="flex flex-col gap-2">
-              <button 
+              <div 
                 onClick={() => setShowSettings(true)}
-                className={`flex items-center gap-3 p-2 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors ${isCollapsed ? 'justify-center' : ''}`}
-                title="Settings"
+                className={`flex items-center gap-3 p-2 rounded-lg hover:bg-slate-200 dark:hover:bg-slate-800 transition-colors cursor-pointer group ${isCollapsed ? 'justify-center' : ''}`}
               >
-                <Settings size={20} className="text-slate-500" />
-                {!isCollapsed && <span>Settings</span>}
-              </button>
-
-              <div className={`flex items-center gap-3 p-2 rounded-lg ${isCollapsed ? 'justify-center' : ''}`}>
-                <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 font-bold text-xs flex-shrink-0">
+                <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 font-bold text-xs flex-shrink-0 group-hover:bg-blue-200 dark:group-hover:bg-blue-800 transition-colors">
                   {user?.displayName ? user.displayName[0].toUpperCase() : user?.email ? user.email[0].toUpperCase() : "U"}
                 </div>
                 {!isCollapsed && (
                   <div className="min-w-0 flex-1 flex justify-between items-center">
                     <div className="flex flex-col">
-                      <span className="text-sm font-bold text-slate-800 dark:text-slate-200 truncate">
+                      <span className="text-sm font-bold text-slate-800 dark:text-slate-200 truncate group-hover:text-blue-700 dark:group-hover:text-blue-400 transition-colors">
                         {user?.displayName || user?.email?.split("@")[0].toUpperCase() || "User"}
                       </span>
                       <span className="text-xs text-slate-500 truncate">
@@ -165,7 +201,7 @@ export function Sidebar() {
                       </span>
                     </div>
                     <button 
-                      onClick={logout}
+                      onClick={(e) => { e.stopPropagation(); logout(); }}
                       className="p-1.5 text-slate-400 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-950/30 rounded-lg transition-colors"
                       title="Sign Out"
                     >
