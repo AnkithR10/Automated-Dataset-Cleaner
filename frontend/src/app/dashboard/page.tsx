@@ -8,6 +8,8 @@ import { MLInsights } from "@/components/MLInsights";
 import { ActivityLog } from "@/components/ActivityLog";
 import { WorkflowVisualizer } from "@/components/WorkflowVisualizer";
 import { RecentActivityTable } from "@/components/RecentActivityTable";
+import { DashboardMetrics } from "@/components/DashboardMetrics";
+import { DatasetWorkspace } from "@/components/DatasetWorkspace";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDashboardSearch } from "./layout";
 import api from "@/lib/api";
@@ -450,74 +452,14 @@ export default function DashboardPage() {
   const renderWorkspace = () => {
     if (!jobId) {
       return (
-        <div className="flex-1 flex flex-col items-center justify-center py-12 max-w-2xl mx-auto w-full gap-8">
-          <div
-            {...getRootProps()}
-            className={`w-full border-2 border-dashed rounded-2xl p-12 text-center cursor-pointer transition-all duration-300 ${
-              isDragActive
-                ? "border-emerald-600 bg-emerald-500/5 scale-[1.01]"
-                : "border-slate-300 hover:border-emerald-600 bg-slate-50/50"
-            }`}
-          >
-            <input {...getInputProps()} />
-            <div className="h-14 w-14 rounded-2xl bg-slate-100 text-slate-600 flex items-center justify-center mx-auto mb-5 border border-slate-200">
-              {uploading ? (
-                <Loader2 className="animate-spin text-emerald-600" size={24} />
-              ) : (
-                <Upload size={24} />
-              )}
-            </div>
-            <h3 className="text-sm font-bold text-slate-800 mb-1">
-              {uploading ? `Uploading... ${uploadProgress}%` : "Drag and drop your spreadsheet to start"}
-            </h3>
-            <p className="text-xs text-slate-400 mb-5 font-semibold">
-              CSV formatted spreadsheet files up to 25MB
-            </p>
-            {!uploading && (
-              <button className="px-5 py-2.5 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-md transition-colors cursor-pointer">
-                Browse Spreadsheet Files
-              </button>
-            )}
-          </div>
-
-          {/* Recent Logs List */}
-          <div className="w-full space-y-3">
-            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-400 flex items-center gap-1.5 px-1">
-              <History size={14} /> Recent Processing Logs
-            </h3>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 w-full">
-              {filteredHistory.length > 0 ? (
-                filteredHistory.map((item) => (
-                  <div
-                    key={item.jobId}
-                    onClick={() => handleSelectHistoryDataset(item)}
-                    className="p-3 bg-slate-50 border border-slate-200 hover:border-slate-350 hover:bg-white rounded-xl cursor-pointer transition-all duration-200 group flex items-center justify-between gap-3 text-xs"
-                  >
-                    <div className="min-w-0 flex-1 flex items-center gap-2.5">
-                      <FileSpreadsheet size={16} className="text-slate-400" />
-                      <div className="min-w-0 flex-1">
-                        <h4 className="font-bold text-slate-700 truncate">{item.filename}</h4>
-                        <span className="text-[10px] text-slate-400 block mt-0.5">{item.timestamp}</span>
-                      </div>
-                    </div>
-                    <button
-                      onClick={(e) => handleRemoveHistoryDataset(e, item.jobId)}
-                      className="text-slate-400 hover:text-rose-600 p-1.5 hover:bg-rose-50 rounded-lg transition-colors opacity-0 group-hover:opacity-100 border border-slate-100 bg-white"
-                      title="Delete log entry"
-                    >
-                      <Trash2 size={12} />
-                    </button>
-                  </div>
-                ))
-              ) : (
-                <div className="col-span-2 text-center py-6 text-slate-400 text-xs font-semibold">
-                  No historical logs logged.
-                </div>
-              )}
-            </div>
-          </div>
-        </div>
+        <DatasetWorkspace
+          dropzone={{ getRootProps, getInputProps, isDragActive }}
+          uploading={uploading}
+          uploadProgress={uploadProgress}
+          filteredHistory={filteredHistory}
+          onSelectHistory={handleSelectHistoryDataset}
+          onRemoveHistory={handleRemoveHistoryDataset}
+        />
       );
     }
 
@@ -716,22 +658,35 @@ export default function DashboardPage() {
       </div>
         
       <div className="space-y-6 pb-8">
+        <DashboardMetrics 
+          datasetsCleaned={uploadsUsed}
+          quotaLimit={quotaLimit}
+          isPremium={isPremium}
+          pipelineStatus={processing ? "Processing..." : "Ready for Ingestion"}
+        />
+        
         {!isPremium && (
-          <div className="p-4 bg-emerald-50 dark:bg-emerald-950/20 border border-emerald-100 dark:border-emerald-900/35 rounded-2xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 shadow-sm animate-fade-in transition-colors">
-            <div className="flex items-center gap-3">
-              <div className="h-10 w-10 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-700 dark:text-emerald-400 rounded-xl flex items-center justify-center flex-shrink-0">
-                <Crown size={20} className="animate-pulse" />
+          <div className="relative overflow-hidden p-6 bg-gradient-to-br from-emerald-900/90 to-emerald-800 dark:from-emerald-950/80 dark:to-emerald-900/60 border border-emerald-500/30 rounded-3xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 shadow-xl shadow-emerald-900/10 backdrop-blur-md transition-all">
+            {/* Glassmorphic decorative circles */}
+            <div className="absolute -top-12 -right-12 w-32 h-32 bg-emerald-400/20 rounded-full blur-2xl pointer-events-none" />
+            <div className="absolute -bottom-8 -left-8 w-24 h-24 bg-emerald-500/20 rounded-full blur-xl pointer-events-none" />
+            
+            <div className="flex items-start gap-4 relative z-10">
+              <div className="h-12 w-12 bg-white/10 text-white rounded-2xl flex items-center justify-center flex-shrink-0 shadow-inner backdrop-blur-sm border border-white/20">
+                <Crown size={24} className="animate-pulse drop-shadow-md" />
               </div>
               <div>
-                <h4 className="font-bold text-slate-900 dark:text-white text-xs">Unlock Pro Suggestions & Interactive Simulators</h4>
-                <p className="text-[10px] text-slate-500 dark:text-slate-400 mt-0.5 leading-relaxed font-semibold">
-                  You are currently on the Free plan. Upgrade to Plus or Pro for priority queues, XAI feature importance, and interactive model training simulators.
+                <h4 className="font-black text-white text-base tracking-tight mb-1">
+                  Unlock Pro Suggestions & Interactive Simulators
+                </h4>
+                <p className="text-xs text-emerald-50 max-w-2xl leading-relaxed font-medium">
+                  You are currently on the Free plan. Upgrade to Plus or Pro for priority queues, XAI feature importance, and interactive model training simulators designed for elite enterprise teams.
                 </p>
               </div>
             </div>
             <button
               onClick={() => router.push("/pricing")}
-              className="px-4 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-sm transition-all whitespace-nowrap cursor-pointer hover:-translate-y-0.5"
+              className="relative z-10 px-6 py-3 bg-white text-emerald-900 hover:bg-emerald-50 font-black text-xs uppercase tracking-wider rounded-xl shadow-lg hover:shadow-xl transition-all whitespace-nowrap cursor-pointer hover:-translate-y-0.5 border border-emerald-100"
             >
               Upgrade Now
             </button>

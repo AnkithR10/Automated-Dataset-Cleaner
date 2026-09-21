@@ -31,16 +31,16 @@ export function ActivityLog({ historyList, activeJobId, onSelect, onClear }: Act
   };
 
   return (
-    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm space-y-6 relative overflow-hidden transition-all duration-300">
+    <div className="bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-xl p-6 shadow-sm flex flex-col h-full relative overflow-hidden transition-all duration-300">
       {/* Decorative background shape */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
 
-      <div className="flex justify-between items-start">
+      <div className="flex justify-between items-start mb-6">
         <div className="space-y-1 flex-1">
-          <h3 className="text-[18px] font-semibold text-slate-800 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
+          <h3 className="text-sm font-semibold text-slate-800 dark:text-slate-100 uppercase tracking-wider flex items-center gap-2">
             <ShieldCheck size={18} className="text-emerald-500" /> Privacy & Local Logs
           </h3>
-          <p className="text-[14px] leading-relaxed text-slate-500 dark:text-slate-400 font-semibold">
+          <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400">
             Manage your local caching footprint. Purging logs removes all historical metadata cached on this browser.
           </p>
         </div>
@@ -53,19 +53,19 @@ export function ActivityLog({ historyList, activeJobId, onSelect, onClear }: Act
         </div>
       </div>
 
-      <div className="p-4 bg-emerald-500/5 border border-emerald-500/10 rounded-xl flex items-start gap-3">
+      <div className="p-4 mb-6 bg-emerald-500/5 border border-emerald-500/10 rounded-xl flex items-start gap-3">
         <ShieldCheck className="text-emerald-600 dark:text-emerald-400 flex-shrink-0 mt-0.5" size={16} />
-        <p className="text-[14px] leading-relaxed text-slate-500 dark:text-slate-400 font-semibold">
+        <p className="text-xs leading-relaxed text-slate-500 dark:text-slate-400">
           <strong>Privacy Policy Commitment:</strong> Your data security is paramount. Processed spreadsheets are held in secure, transient memory buffers and deleted after processing. PURGE HISTORY below to completely delete local caches.
         </p>
       </div>
 
-      <div className="space-y-3">
+      <div className="space-y-3 flex-1 flex flex-col min-h-0">
         <h4 className="text-xs font-bold text-slate-450 dark:text-slate-550 uppercase tracking-wider flex items-center gap-1.5 px-1">
           <History size={14} /> Historical Workspace Logs
         </h4>
 
-        <div className="max-h-60 overflow-y-auto space-y-2.5 pr-1 scrollbar-thin">
+        <div className="flex-1 overflow-y-auto space-y-2.5 pr-1 scrollbar-thin">
           {historyList.length > 0 ? (
             historyList.map((item) => {
               const isActive = item.jobId === activeJobId;
@@ -82,8 +82,8 @@ export function ActivityLog({ historyList, activeJobId, onSelect, onClear }: Act
                   <div className="min-w-0 flex-1 flex items-center gap-2.5">
                     <FileSpreadsheet size={16} className={isActive ? "text-emerald-500" : "text-slate-400"} />
                     <div className="min-w-0 flex-1">
-                      <h5 className="text-[16px] font-bold text-slate-700 dark:text-slate-200 truncate">{item.filename}</h5>
-                      <span className="text-[14px] leading-relaxed text-slate-400 dark:text-slate-500 block mt-0.5">
+                      <h5 className="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate">{item.filename}</h5>
+                      <span className="text-xs leading-relaxed text-slate-500 dark:text-slate-400 block mt-0.5">
                         {item.timestamp} · {item.metadata ? `${item.metadata.rows} rows x ${item.metadata.cols} cols` : "N/A"}
                       </span>
                     </div>
@@ -105,7 +105,7 @@ export function ActivityLog({ historyList, activeJobId, onSelect, onClear }: Act
       </div>
 
       {historyList.length > 0 && (
-        <div className="flex justify-between items-center pt-2 border-t border-slate-100 dark:border-slate-800">
+        <div className="flex justify-between items-center pt-4 mt-4 border-t border-slate-100 dark:border-slate-800">
           <span className="text-[10px] text-slate-400 dark:text-slate-550 font-bold">
             {historyList.length} cached records stored locally
           </span>
