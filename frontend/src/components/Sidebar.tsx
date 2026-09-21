@@ -252,30 +252,37 @@ export function Sidebar() {
                 Recent Datasets
               </div>
               <nav className="space-y-1">
-                {recentDatasets.map((dataset, idx) => (
-                  <Link
-                    key={idx}
-                    href="/dashboard"
-                    onClick={() => setMobileMenuOpen(false)}
-                    className="flex items-center gap-3 p-2.5 rounded-lg text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
+                {historyList.map((item) => (
+                  <div
+                    key={item.jobId}
+                    className="flex items-center justify-between p-2.5 rounded-lg text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors group"
                   >
-                    <MessageSquare size={18} className="text-slate-400" />
-                    <span className="truncate">{dataset}</span>
-                  </Link>
+                    <Link
+                      href="/dashboard"
+                      onClick={() => setMobileMenuOpen(false)}
+                      className="flex items-center gap-3 min-w-0 flex-1"
+                    >
+                      <MessageSquare size={18} className="text-slate-400 flex-shrink-0" />
+                      <span className="truncate">{item.filename}</span>
+                    </Link>
+                    <button
+                      onClick={(e) => handleRemoveHistory(e, item.jobId)}
+                      className="p-1 text-slate-400 hover:text-rose-500 opacity-0 group-hover:opacity-100 transition-opacity"
+                      title="Remove"
+                    >
+                      <Trash2 size={14} />
+                    </button>
+                  </div>
                 ))}
+                {historyList.length === 0 && (
+                  <div className="text-xs text-slate-400 px-2 py-4 italic">No recent datasets</div>
+                )}
               </nav>
             </div>
 
             {isAuthenticated && (
               <div className="border-t border-slate-200 dark:border-slate-800 pt-4 flex flex-col gap-3 mt-auto">
-                <button 
-                  onClick={() => { setShowSettings(true); setMobileMenuOpen(false); }}
-                  className="flex items-center gap-3 p-2.5 rounded-lg text-sm font-semibold text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors"
-                >
-                  <Settings size={20} className="text-slate-500" />
-                  <span>Settings</span>
-                </button>
-                <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+                <div className="flex items-center justify-between p-2.5 bg-slate-50 dark:bg-slate-800/50 rounded-lg cursor-pointer hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors" onClick={() => { setShowSettings(true); setMobileMenuOpen(false); }}>
                   <div className="flex items-center gap-2">
                     <div className="h-8 w-8 rounded-full bg-blue-100 dark:bg-blue-900 flex items-center justify-center text-blue-600 font-bold text-xs">
                       {user?.displayName ? user.displayName[0].toUpperCase() : user?.email ? user.email[0].toUpperCase() : "U"}
