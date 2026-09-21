@@ -47,7 +47,8 @@ function LandingPage() {
       addToast("Successfully logged in with Google", "success");
       router.push("/dashboard");
     } catch (err: any) {
-      console.error("Auth error:", err?.code, err?.message);
+      console.error("Firebase Auth Error Code:", err?.code);
+      console.error("Firebase Auth Error Message:", err?.message);
       let errorMessage = "Authentication failed. Please try again.";
       if (err?.code === "auth/popup-closed-by-user") errorMessage = "Sign-in cancelled.";
       else if (err?.code === "auth/unauthorized-domain") errorMessage = "This domain is not authorized for Google Sign-In.";
@@ -57,6 +58,13 @@ function LandingPage() {
       setAuthLoading(false);
     }
   };
+
+  // Auto-redirect to dashboard if coming back from an OAuth redirect flow
+  useEffect(() => {
+    if (isAuthenticated) {
+      router.push("/dashboard");
+    }
+  }, [isAuthenticated, router]);
 
   const handleDeveloperLogin = async (email: string) => {
     setAuthLoading(true);

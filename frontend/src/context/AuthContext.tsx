@@ -5,7 +5,7 @@ import {
   onAuthStateChanged,
   signOut
 } from "firebase/auth";
-import { auth, signInWithGoogle as firebaseSignInWithGoogle, getRedirectResult } from "@/lib/firebase";
+import { auth, signInWithGoogle as firebaseSignInWithGoogle, signInWithGoogleRedirect, getRedirectResult } from "@/lib/firebase";
 
 interface AuthContextType {
   user: any | null;
@@ -96,9 +96,31 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       setLoading(false);
       return result;
     } catch (error: any) {
-      console.error("Auth error:", error?.code, error?.message);
-      setLoading(false);
-      throw error;
+      console.error("Firebase Auth Error Code:", error?.code);
+      console.error("Firebase Auth Error Message:", error?.message);
+      
+      // Implement automated fallback if popup is blocked or closed
+      const isPopupBlocked = 
+        error?.code === "auth/popup-blocked" || 
+        error?.code === "auth/popup-closed-by-user" || 
+        error?.code === "auth/unauthorized-domain" ||
+        error?.message?.toLowerCase().includes("popup") ||
+        error?.message?.toLowerCase().includes("cross-origin");
+
+      if (isPopupBlocked) {
+        console.warn("Popup blocked or failed. Falling back to signInWithRedirect...");
+        try {
+          await signInWithGoogleRedirect();
+          // The page will redirect, so we don't return here.
+        } catch (redirectError: any) {
+          console.error("Fallback redirect error:", redirectError);
+          setLoading(false);
+          throw redirectError;
+        }
+      } else {
+        setLoading(false);
+        throw error;
+      }
     }
   };
 

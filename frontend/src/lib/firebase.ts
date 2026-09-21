@@ -56,7 +56,9 @@ provider.setCustomParameters({
   prompt: 'select_account' // This forces the "Choose an account" screen
 });
 
+import { signInWithRedirect } from "firebase/auth";
 const signInWithGoogle = () => signInWithPopup(auth, provider);
+const signInWithGoogleRedirect = () => signInWithRedirect(auth, provider);
 
-export { app, auth, db, isConfigComplete, signInWithGoogle, getRedirectResult };
+export { app, auth, db, isConfigComplete, signInWithGoogle, signInWithGoogleRedirect, getRedirectResult };
 
