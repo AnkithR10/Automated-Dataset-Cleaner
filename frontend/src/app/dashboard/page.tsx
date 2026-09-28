@@ -5,9 +5,7 @@ import { useDropzone } from "react-dropzone";
 import { useAuth } from "@/hooks/useAuth";
 import { useRouter } from "next/navigation";
 import { MLInsights } from "@/components/MLInsights";
-import { ActivityLog } from "@/components/ActivityLog";
 import { WorkflowVisualizer } from "@/components/WorkflowVisualizer";
-import { RecentActivityTable } from "@/components/RecentActivityTable";
 import { DashboardMetrics } from "@/components/DashboardMetrics";
 import { DatasetWorkspace } from "@/components/DatasetWorkspace";
 import { motion, AnimatePresence } from "framer-motion";
@@ -267,6 +265,9 @@ export default function DashboardPage() {
         standardize_column_names: standardizeColumnNames,
         standardize_types: true
       });
+
+      // Instantly deduct and reflect quota in the UI
+      fetchQuota();
 
       setProcessingStatus("Standardizing schemas & imputing empty values...");
       
@@ -720,25 +721,7 @@ export default function DashboardPage() {
 
         {renderWorkspace()}
 
-        {/* BOTTOM WIDE ACTIVITY LOG */}
-        <div className="w-full">
-          <ActivityLog
-            historyList={historyList}
-            activeJobId={jobId}
-            onSelect={handleSelectHistoryDataset}
-            onClear={() => {
-              setHistoryList([]);
-              handleResetWorkspace();
-            }}
-          />
-        </div>
-
-        <RecentActivityTable
-          historyList={historyList}
-          activeJobId={jobId}
-          onSelect={handleSelectHistoryDataset}
-          onDownload={handleDownloadCleanedForJobId}
-        />
+        {/* Log sections removed to reduce visual clutter (now handled via Sidebar Recent Datasets) */}
 
         {/* PLAN & QUOTA FOOTER CARD */}
         <footer className="w-full pt-4">
