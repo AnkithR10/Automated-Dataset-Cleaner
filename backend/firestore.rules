@@ -1,0 +1,22 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+  
+    function isSuperAdmin() {
+      return request.auth != null && request.auth.token.email == 'ankith.ravishankar@gmail.com';
+    }
+    
+    function isOwner(email) {
+      return request.auth != null && request.auth.token.email == email;
+    }
+
+    match /users/{userEmail} {
+      // Any authenticated user can read their own document, or superadmin can read all
+      allow read: if isOwner(userEmail) || isSuperAdmin();
+      
+      // Only superadmin can arbitrarily update tiers or quotas
+      // Normal users can only write to their own document if they are not escalating their privileges
+      allow write: if isSuperAdmin() || (isOwner(userEmail) && (!request.resource.data.diff(resource.data).affectedKeys().hasAny(['plan_type', 'is_paid', 'quota_limit', 'status'])));
+    }
+  }
+}

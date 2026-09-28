@@ -243,6 +243,10 @@ class BillingService:
 
         if firestore_data:
             tier = firestore_data.get("plan_type", "individual_free")
+            tier_info = TIERS.get(tier, TIERS["individual_free"])
+            is_paid = tier_info["is_paid"]
+            quota_limit = tier_info["quota_limit"]
+
             billing_cycle = firestore_data.get("billing_cycle")
             currency = firestore_data.get("currency", "USD")
             monthly_uploads = firestore_data.get("monthly_uploads_used", 0)
@@ -253,8 +257,8 @@ class BillingService:
             seat_members = firestore_data.get("seat_members", [user_email])
             manual_override = firestore_data.get("manual_override", False)
 
-            # Auto-reset monthly counter in Firestore on new calendar month
-            if firestore_data.get("month_key") != current_month:
+            # Auto-reset monthly counter in Firestore on new calendar month ONLY if paid
+            if is_paid and firestore_data.get("month_key") != current_month:
                 monthly_uploads = 0
                 if doc_ref:
                     try:
@@ -265,14 +269,21 @@ class BillingService:
                     except Exception as update_err:
                         logger.error(f"Failed to reset monthly uploads in Firestore: {update_err}")
 
-            tier_info = TIERS.get(tier, TIERS["individual_free"])
-            quota_limit = tier_info["quota_limit"]
-            is_paid = tier_info["is_paid"]
-
             if manual_override:
                 is_active = True
             elif is_paid:
-                is_active = status_str == "active" or status_str == "pending_cancel"
+                now = time.time()
+                valid_days = 365 if billing_cycle == "yearly" else 30
+                # Enforce that quota validity periods check exact timestamps
+                if now > subscribed_at + valid_days * 24 * 3600:
+                    is_paid = False
+                    tier = "individual_free"
+                    tier_info = TIERS["individual_free"]
+                    quota_limit = tier_info["quota_limit"]
+                    status_str = "expired"
+                    is_active = monthly_uploads < (quota_limit if quota_limit is not None else float("inf"))
+                else:
+                    is_active = status_str == "active" or status_str == "pending_cancel"
             else:
                 used = monthly_uploads
                 limit = quota_limit if quota_limit is not None else float("inf")
@@ -312,7 +323,10 @@ class BillingService:
         # Fallback to local memory db
         entry = _get_or_create(user_email)
         with _db_lock:
-            if entry["month_key"] != current_month:
+            tier_info = TIERS.get(entry["tier"], TIERS["individual_free"])
+            is_paid = tier_info["is_paid"]
+            
+            if is_paid and entry["month_key"] != current_month:
                 entry["monthly_uploads"] = 0
                 entry["month_key"] = current_month
 
@@ -378,7 +392,8 @@ class BillingService:
         entry = _get_or_create(user_email)
         current_month = datetime.now(timezone.utc).strftime("%Y-%m")
         with _db_lock:
-            if entry["month_key"] != current_month:
+            tier_info = TIERS.get(entry["tier"], TIERS["individual_free"])
+            if tier_info["is_paid"] and entry["month_key"] != current_month:
                 entry["monthly_uploads"] = 0
                 entry["month_key"] = current_month
             entry["monthly_uploads"] += 1
@@ -391,7 +406,12 @@ class BillingService:
                 doc_ref = db.collection("users").document(user_email)
                 doc = doc_ref.get()
                 if doc.exists:
+                    db_month = doc.get("month_key")
                     curr_used = doc.get("monthly_uploads_used") or 0
+                    is_paid = TIERS.get(doc.get("plan_type", "individual_free"), TIERS["individual_free"])["is_paid"]
+                    if is_paid and db_month != current_month:
+                        curr_used = 0
+                        
                     doc_ref.update({
                         "monthly_uploads_used": curr_used + 1,
                         "month_key": current_month
@@ -399,7 +419,9 @@ class BillingService:
                 else:
                     doc_ref.set({
                         "monthly_uploads_used": 1,
-                        "month_key": current_month
+                        "month_key": current_month,
+                        "plan_type": "individual_free",
+                        "status": "active"
                     }, merge=True)
             except Exception as e:
                 logger.error(f"Failed to record upload in Firestore: {e}")
