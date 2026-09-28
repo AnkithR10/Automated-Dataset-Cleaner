@@ -22,9 +22,10 @@ interface MLInsightsProps {
   numCols: number;
   targetColumn: string;
   userPlan: string;
+  onDownloadCleaned?: () => void;
 }
 
-export function MLInsights({ jobId, filename, numRows, numCols, targetColumn, userPlan }: MLInsightsProps) {
+export function MLInsights({ jobId, filename, numRows, numCols, targetColumn, userPlan, onDownloadCleaned }: MLInsightsProps) {
   const [selectedType, setSelectedType] = useState<"Classification" | "Regression" | "Clustering">("Classification");
   const [loading, setLoading] = useState(false);
   const [models, setModels] = useState<any[]>([]);
@@ -253,14 +254,24 @@ export function MLInsights({ jobId, filename, numRows, numCols, targetColumn, us
       {/* 2. AI Insights Card */}
       <div className="bg-white border border-slate-200 rounded-xl p-5 shadow-sm space-y-5">
         
-        <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between pb-3 border-b border-slate-100 gap-3">
           <div className="flex items-center gap-2">
             <Sparkles className="text-emerald-600" size={16} />
             <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider">
               Model Suggestions Panel
             </h3>
+            {loading && <Loader2 className="animate-spin text-emerald-600 ml-2" size={14} />}
           </div>
-          {loading && <Loader2 className="animate-spin text-emerald-600" size={14} />}
+          
+          {onDownloadCleaned && (
+            <button
+              onClick={onDownloadCleaned}
+              className="px-3.5 py-1.5 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm flex items-center justify-center gap-1.5 transition-all cursor-pointer"
+            >
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Secure Download Cleaned
+            </button>
+          )}
         </div>
 
         {error && (

@@ -46,8 +46,8 @@
   --font-title: 'Outfit', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
   --font-body:  'Inter',  -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
 
-  /* Base font size — professional SaaS 15px */
-  --font-size-base: 15px;
+  /* Base font size — professional SaaS 16px */
+  --font-size-base: 16px;
 
   /* Color palette — Teal/Emerald primary replacing blue */
   --primary:       #059669;

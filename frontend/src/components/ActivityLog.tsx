@@ -31,11 +31,12 @@ export function ActivityLog({ historyList, activeJobId, onSelect, onClear }: Act
   };
 
   return (
-    <div className="bg-white dark:backdrop-blur-md dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 shadow-sm dark:shadow-2xl flex flex-col md:flex-row gap-8 relative overflow-hidden transition-all duration-300 h-full">
+    <div className="bg-white dark:backdrop-blur-md dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 rounded-2xl p-6 shadow-sm dark:shadow-2xl flex flex-col gap-6 relative overflow-hidden transition-all duration-300 h-full">
       {/* Decorative background shape */}
       <div className="absolute top-0 right-0 w-32 h-32 bg-emerald-500/5 rounded-full blur-3xl pointer-events-none" />
 
-      {/* Left Column: Privacy Info */}
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-start">
+        {/* Left Column: Privacy Info */}
       <div className="flex-1 space-y-6">
         <div className="flex justify-between items-start">
           <div className="space-y-1">
@@ -105,6 +106,7 @@ export function ActivityLog({ historyList, activeJobId, onSelect, onClear }: Act
             </div>
           )}
         </div>
+      </div>
       </div>
 
       {historyList.length > 0 && (

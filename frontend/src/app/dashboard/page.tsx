@@ -489,12 +489,6 @@ export default function DashboardPage() {
 
           <div className="flex gap-2">
             <button
-              onClick={handleDownloadCleaned}
-              className="px-3.5 py-2 text-xs font-bold rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm flex items-center gap-1.5 transition-all cursor-pointer"
-            >
-              <Download size={13} /> Secure Download Cleaned
-            </button>
-            <button
               onClick={handleResetWorkspace}
               className="px-3.5 py-2 text-xs font-bold rounded-lg bg-slate-200 hover:bg-slate-300 text-slate-700 transition-all cursor-pointer"
             >
@@ -510,19 +504,19 @@ export default function DashboardPage() {
           <div className="lg:col-span-5 space-y-6">
             
             {/* Configuration Panel */}
-            <div className="bg-white dark:backdrop-blur-md dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 rounded-xl p-5 shadow-sm dark:shadow-2xl space-y-5">
-              <h3 className="text-sm font-bold text-slate-800 uppercase tracking-wider pb-3 border-b border-slate-100 flex items-center gap-2">
-                <Settings2 size={16} className="text-emerald-600" /> Cleaning Configuration
+            <div className="bg-white dark:backdrop-blur-md dark:bg-slate-900/90 border border-slate-200 dark:border-slate-800/80 rounded-xl p-6 shadow-sm dark:shadow-2xl space-y-6">
+              <h3 className="text-base font-bold text-slate-800 dark:text-slate-100 uppercase tracking-wider pb-3 border-b border-slate-100 dark:border-slate-800 flex items-center gap-2">
+                <Settings2 size={18} className="text-emerald-600 dark:text-emerald-500" /> Cleaning Configuration
               </h3>
 
-              <div className="space-y-4">
+              <div className="space-y-5">
                 {/* Duplicates toggle */}
                 <div className="flex items-start justify-between">
-                  <div className="flex gap-2.5">
-                    <Layers className="text-slate-400 mt-0.5" size={15} />
+                  <div className="flex gap-3">
+                    <Layers className="text-slate-400 mt-0.5" size={16} />
                     <div>
-                      <label className="text-xs font-bold text-slate-700 block">Remove Duplicates</label>
-                      <span className="text-[10px] text-slate-400 block font-semibold">Exclude redundant records</span>
+                      <label className="text-sm font-bold text-slate-700 dark:text-slate-200 block">Remove Duplicates</label>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 block font-medium">Exclude redundant records</span>
                     </div>
                   </div>
                   <input
@@ -535,11 +529,11 @@ export default function DashboardPage() {
 
                 {/* Columns headers toggle */}
                 <div className="flex items-start justify-between">
-                  <div className="flex gap-2.5">
-                    <Columns className="text-slate-400 mt-0.5" size={15} />
+                  <div className="flex gap-3">
+                    <Columns className="text-slate-400 mt-0.5" size={16} />
                     <div>
-                      <label className="text-xs font-bold text-slate-705 block">Standardize Columns</label>
-                      <span className="text-[10px] text-slate-400 block font-semibold">Lowercase snake_case headers</span>
+                      <label className="text-sm font-bold text-slate-700 dark:text-slate-200 block">Standardize Columns</label>
+                      <span className="text-xs text-slate-500 dark:text-slate-400 block font-medium">Lowercase snake_case headers</span>
                     </div>
                   </div>
                   <input
@@ -551,12 +545,12 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Imputation dropdown */}
-                <div className="flex flex-col gap-1.5 pt-2 border-t border-slate-100">
-                  <label className="text-xs font-bold text-slate-705">Handle Empty Cells (Imputation)</label>
+                <div className="flex flex-col gap-2 pt-3 border-t border-slate-100 dark:border-slate-800">
+                  <label className="text-sm font-bold text-slate-700 dark:text-slate-200">Handle Empty Cells (Imputation)</label>
                   <select
                     value={missingStrategy}
                     onChange={(e) => setMissingStrategy(e.target.value)}
-                    className="w-full rounded-lg border border-slate-200 bg-white p-2.5 text-xs font-bold text-slate-700 outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-500 transition-colors"
+                    className="w-full rounded-lg border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 p-3 text-sm font-medium text-slate-800 dark:text-slate-200 outline-none focus:border-emerald-600 focus:ring-1 focus:ring-emerald-500 transition-colors"
                   >
                     <option value="none">Keep empty records (Ignore)</option>
                     <option value="drop">Drop rows with empty cells</option>
@@ -565,19 +559,19 @@ export default function DashboardPage() {
                 </div>
 
                 {/* Cleaning trigger */}
-                <div className="pt-2">
+                <div className="pt-4">
                   <button
                     onClick={handleClean}
                     disabled={processing}
-                    className="w-full flex items-center justify-center gap-1.5 py-2.5 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl shadow-md disabled:opacity-60 disabled:cursor-not-allowed transition-all cursor-pointer"
+                    className="w-full flex items-center justify-center gap-2 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-md disabled:opacity-60 disabled:cursor-not-allowed transition-all cursor-pointer"
                   >
                     {processing ? (
                       <>
-                        <Loader2 className="animate-spin" size={14} /> {processingStatus || "Processing..."}
+                        <Loader2 className="animate-spin" size={16} /> {processingStatus || "Processing..."}
                       </>
                     ) : (
                       <>
-                        <Play size={12} className="fill-white" /> Clean Dataset Now
+                        <Play size={16} className="fill-white" /> Clean Dataset Now
                       </>
                     )}
                   </button>
@@ -639,6 +633,7 @@ export default function DashboardPage() {
               numCols={datasetMetadata?.cols || 10}
               targetColumn={datasetMetadata?.target || "target"}
               userPlan={quota?.tier_type || "individual_free"}
+              onDownloadCleaned={handleDownloadCleaned}
             />
           </div>
 
@@ -665,7 +660,7 @@ export default function DashboardPage() {
         ))}
       </div>
         
-      <div className="space-y-6 pb-8">
+      <div className="flex-1 w-full min-w-0 p-4 md:p-8 max-w-full overflow-hidden space-y-6 pb-8">
         <DashboardMetrics 
           datasetsCleaned={uploadsUsed}
           quotaLimit={quotaLimit}
@@ -704,7 +699,7 @@ export default function DashboardPage() {
         {renderWorkspace()}
 
         {/* BOTTOM WIDE ACTIVITY LOG */}
-        <div className="w-full bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl shadow-sm p-6 overflow-hidden">
+        <div className="w-full">
           <ActivityLog
             historyList={historyList}
             activeJobId={jobId}

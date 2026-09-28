@@ -41,9 +41,10 @@ interface RecommendedModel {
 interface ModelSelectorProps {
   xaiInsights: XAIInsights;
   recommendations: RecommendedModel[];
+  onDownloadCleaned?: () => void;
 }
 
-export function ModelSelector({ xaiInsights, recommendations }: ModelSelectorProps) {
+export function ModelSelector({ xaiInsights, recommendations, onDownloadCleaned }: ModelSelectorProps) {
   const [runningModel, setRunningModel] = useState<RecommendedModel | null>(null);
   const [logs, setLogs] = useState<string[]>([]);
   const [trainingProgress, setTrainingProgress] = useState(0);
@@ -137,16 +138,28 @@ export function ModelSelector({ xaiInsights, recommendations }: ModelSelectorPro
       
       {/* 1. XAI Insight Card */}
       <div className="bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl p-6 shadow-sm">
-        <div className="flex items-center gap-3 mb-4">
-          <div className="h-10 w-10 bg-emerald-50 dark:bg-emerald-950 border border-emerald-100 dark:border-emerald-900/30 rounded-xl flex items-center justify-center">
-            <Sparkles className="text-emerald-500" size={20} />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 mb-4">
+          <div className="flex items-center gap-3">
+            <div className="h-10 w-10 bg-emerald-50 dark:bg-emerald-950 border border-emerald-100 dark:border-emerald-900/30 rounded-xl flex items-center justify-center">
+              <Sparkles className="text-emerald-500" size={20} />
+            </div>
+            <div>
+              <h3 className="text-sm font-black text-slate-800 dark:text-white">Explainable AI (XAI) insights</h3>
+              <p className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-bold">
+                Analysis Type: {xaiInsights.analysis_type || "Detecting..."} · Target Column: {xaiInsights.target_column}
+              </p>
+            </div>
           </div>
-          <div>
-            <h3 className="text-sm font-black text-slate-800 dark:text-white">Explainable AI (XAI) insights</h3>
-            <p className="text-[10px] text-slate-400 dark:text-slate-500 uppercase tracking-wider font-bold">
-              Analysis Type: {xaiInsights.analysis_type || "Detecting..."} · Target Column: {xaiInsights.target_column}
-            </p>
-          </div>
+          
+          {onDownloadCleaned && (
+            <button
+              onClick={onDownloadCleaned}
+              className="px-4 py-2 text-xs font-bold rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm flex items-center gap-2 transition-all cursor-pointer"
+            >
+              <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              Export Clean Dataset
+            </button>
+          )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
