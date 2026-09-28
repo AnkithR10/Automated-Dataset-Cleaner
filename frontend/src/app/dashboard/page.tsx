@@ -275,7 +275,17 @@ export default function DashboardPage() {
     } catch (err: any) {
       setProcessing(false);
       setProcessingStatus(null);
-      addToast(err.response?.data?.detail || "Could not start cleaning process.", "error");
+      
+      if (err.response?.status === 404) {
+        addToast("Job not found. The server session may have restarted or the job expired. Please re-upload or select a dataset from history.", "error");
+        setJobId(null);
+        setActiveFilename(null);
+        setDatasetMetadata(null);
+        setPreviewColumns([]);
+        setPreviewRows([]);
+      } else {
+        addToast(err.response?.data?.detail || "Could not start cleaning process.", "error");
+      }
     }
   };
 
@@ -313,8 +323,20 @@ export default function DashboardPage() {
           setProcessingStatus(null);
           addToast(res.data.error || "Dataset cleaning failed.", "error");
         }
-      } catch (err) {
-        console.error("Status check failed", err);
+      } catch (err: any) {
+        if (err.response?.status === 404) {
+          clearInterval(interval);
+          setProcessing(false);
+          setProcessingStatus(null);
+          addToast("Active job expired or not found. Please re-upload your dataset.", "error");
+          setJobId(null);
+          setActiveFilename(null);
+          setDatasetMetadata(null);
+          setPreviewColumns([]);
+          setPreviewRows([]);
+        } else {
+          console.error("Status check failed", err);
+        }
       }
     }, 2000);
   };
@@ -562,7 +584,7 @@ export default function DashboardPage() {
                 <div className="pt-4">
                   <button
                     onClick={handleClean}
-                    disabled={processing}
+                    disabled={processing || uploading || !jobId}
                     className="w-full flex items-center justify-center gap-2 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-sm rounded-xl shadow-md disabled:opacity-60 disabled:cursor-not-allowed transition-all cursor-pointer"
                   >
                     {processing ? (
