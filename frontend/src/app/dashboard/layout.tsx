@@ -4,6 +4,8 @@ import React, { createContext, useContext, useState, useEffect } from "react";
 import { Search } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import api from "@/lib/api";
+import { db } from "@/lib/firebase";
+import { doc, onSnapshot } from "firebase/firestore";
 
 interface SearchContextType {
   searchText: string;
@@ -34,9 +36,30 @@ export default function DashboardLayout({
 
   useEffect(() => {
     if (isAuthenticated && user?.email) {
+      // Fetch initial quota from backend
       api.get("/api/billing/status")
         .then((res) => setQuota(res.data))
         .catch((err) => console.error("Layout failed to fetch quota", err));
+
+      // Subscribe to real-time quota updates from Firestore (doc is keyed by email)
+      const userDocRef = doc(db, "users", user.email);
+      const unsubscribe = onSnapshot(userDocRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setQuota((prev) => ({
+            ...prev,
+            tier_display: data.plan_type === "enterprise_pro" ? "Founder Mode (Unlimited)" : 
+                         data.plan_type === "individual_go" ? "Individual Go" :
+                         data.plan_type === "individual_plus" ? "Individual Plus" : 
+                         data.plan_type === "individual_pro" ? "Individual Pro" : "Free Tier",
+            monthly_uploads_used: data.monthly_uploads_used ?? 0,
+            quota_limit: data.plan_type === "enterprise_pro" || data.plan_type === "individual_pro" ? null : 
+                        data.plan_type === "individual_go" ? 20 :
+                        data.plan_type === "individual_plus" ? 50 : 5
+          }));
+        }
+      });
+      return () => unsubscribe();
     }
   }, [isAuthenticated, user?.email]);
 

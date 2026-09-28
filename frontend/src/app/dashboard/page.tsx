@@ -11,6 +11,8 @@ import { DatasetWorkspace } from "@/components/DatasetWorkspace";
 import { motion, AnimatePresence } from "framer-motion";
 import { useDashboardSearch } from "./layout";
 import api from "@/lib/api";
+import { db } from "@/lib/firebase";
+import { doc, onSnapshot } from "firebase/firestore";
 import {
   Upload,
   FileSpreadsheet,
@@ -162,7 +164,29 @@ export default function DashboardPage() {
 
   useEffect(() => {
     if (isAuthenticated && user?.email) {
+      // Fetch initial quota
       fetchQuota();
+
+      // Subscribe to real-time quota updates from Firestore (doc is keyed by email)
+      const userDocRef = doc(db, "users", user.email);
+      const unsubscribe = onSnapshot(userDocRef, (docSnap) => {
+        if (docSnap.exists()) {
+          const data = docSnap.data();
+          setQuota((prev: any) => ({
+            ...prev,
+            tier_display: data.plan_type === "enterprise_pro" ? "Founder Mode (Unlimited)" : 
+                         data.plan_type === "individual_go" ? "Individual Go" :
+                         data.plan_type === "individual_plus" ? "Individual Plus" : 
+                         data.plan_type === "individual_pro" ? "Individual Pro" : "Free Tier",
+            tier_type: data.plan_type || "individual_free",
+            monthly_uploads_used: data.monthly_uploads_used ?? 0,
+            quota_limit: data.plan_type === "enterprise_pro" || data.plan_type === "individual_pro" ? null : 
+                        data.plan_type === "individual_go" ? 20 :
+                        data.plan_type === "individual_plus" ? 50 : 5
+          }));
+        }
+      });
+      return () => unsubscribe();
     }
   }, [isAuthenticated, user?.email, fetchQuota]);
 
