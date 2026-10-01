@@ -342,6 +342,11 @@ export default function DashboardPage() {
             };
             setDatasetMetadata(updatedMeta);
           }
+          
+          if (res.data.preview_columns && res.data.preview_rows) {
+            setPreviewColumns(res.data.preview_columns);
+            setPreviewRows(res.data.preview_rows);
+          }
         } else if (status === "Failed") {
           clearInterval(interval);
           setProcessing(false);
@@ -389,6 +394,11 @@ export default function DashboardPage() {
           cols: res.data.xai_insights?.num_cols || item.metadata?.cols || 10,
           target: res.data.xai_insights?.target_column || item.metadata?.target || "target"
         });
+        
+        if (res.data.preview_columns && res.data.preview_rows) {
+          setPreviewColumns(res.data.preview_columns);
+          setPreviewRows(res.data.preview_rows);
+        }
       }
       addToast(`Switched active context to ${item.filename}`, "info");
     } catch (err) {

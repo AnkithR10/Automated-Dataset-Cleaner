@@ -269,6 +269,17 @@ async def get_job_status(
         response["download_url"] = f"/api/download/{job_id}"
         response["xai_insights"] = job_info.get("xai_insights", {})
         response["recommendations"] = job_info.get("recommendations", [])
+        
+        processed_path = job_info.get("processed_path")
+        if processed_path and os.path.exists(processed_path):
+            try:
+                import pandas as pd
+                df_preview = pd.read_csv(processed_path, nrows=10)
+                df_preview = df_preview.fillna("")
+                response["preview_columns"] = list(df_preview.columns)
+                response["preview_rows"] = df_preview.to_dict(orient="records")
+            except Exception as e:
+                logger.error(f"Failed to load preview for job {job_id}: {e}")
     elif job_info["status"] == "Failed":
         response["processed"] = False
         response["error"] = job_info.get("error", "Unknown processing error")
